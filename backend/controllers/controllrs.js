@@ -1,9 +1,10 @@
 const asynchandler = require("express-async-handler");
+const goalModel = require("../model/goalModel");
+
 //get
 const getGoal = asynchandler(async (req, res) => {
-  res
-    .status(200)
-    .json({ message: "i am from get api from controlelr function" });
+  const goals = await goalModel.find();
+  res.status(200).json(goals);
 });
 //set
 const setGoal = asynchandler(async (req, res) => {
@@ -11,7 +12,11 @@ const setGoal = asynchandler(async (req, res) => {
     res.status(400);
     throw new Error("add a text field");
   }
-  res.status(200).json({ message: "set goals from post api" });
+
+  const goals = await goalModel.create({
+    text: req.body.text,
+  });
+  res.status(200).json(goals);
 });
 //update
 const updateGoal = asynchandler(async (req, res) => {
