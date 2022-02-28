@@ -20,12 +20,30 @@ const setGoal = asynchandler(async (req, res) => {
 });
 //update
 const updateGoal = asynchandler(async (req, res) => {
-  res.status(200).json({ message: `update id is ${req.params.id}` });
+  const goals = await goalModel.findById(req.params.id);
+  if (!goals) {
+    res.status(400);
+    throw new Error("goal not found");
+  }
+
+  const updatedGoals = await goalModel.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.status(200).json(updatedGoals);
 });
 
 //delete goal
 const deleteGoal = asynchandler(async (req, res) => {
-  res.status(200).json({ message: `delete id is ${req.params.id}` });
+  const goals = await goalModel.findById(req.params.id);
+  if (!goals) {
+    res.status(400);
+    throw new Error("goal not found");
+  }
+
+  await goals.remove();
+  res.status(200).json({ id: req.params.id });
 });
 module.exports = {
   getGoal,
